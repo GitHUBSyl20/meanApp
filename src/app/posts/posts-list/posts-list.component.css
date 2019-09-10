@@ -1,0 +1,9 @@
+:host{
+    /*target the element itsefl*/
+    display: block;
+    margin-top: 2rem;
+}
+
+.info-text{
+    text-align:center;
+}

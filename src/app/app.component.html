@@ -1,0 +1,16 @@
+<app-header></app-header>
+<main>
+    <!--onPOstCreated is an event emited from post-create that trigger onPostAdded
+    trigger anything we want-->
+    <!--Gives acces to the data we emitted--
+<app-post-create (postCreated)="onPostAdded($event)"></app-post-create>
+--prop binding--
+<app-posts-list [posts]="storedPosts"></app-posts-list>
+</main>
+--listening to the postCreated event, weare adding a post the posts List
+//we are then apssing done that array to app-post-list
+-->
+
+<app-post-create ></app-post-create>
+<!--prop binding-->
+<app-posts-list></app-posts-list>
