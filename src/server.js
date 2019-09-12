@@ -1,7 +1,6 @@
-const app = require("./backend/app");
+const http = require('http');
+const app = require('./backend/app');
 const debug = require("debug")("node-angular");
-const http = require("http");
-
 
 const normalizePort = val => {
     var port = parseInt(val, 10);
@@ -18,7 +17,7 @@ const normalizePort = val => {
   
     return false;
   };
-  
+  //wich type of error ?
   const onError = error => {
     if (error.syscall !== "listen") {
       throw error;
@@ -44,9 +43,10 @@ const normalizePort = val => {
     debug("Listening on " + bind);
   };
   
+  //key/value
+//which port express is working on
   const port = normalizePort(process.env.PORT || "3000");
   app.set("port", port);
-  
 
   //creation server
   const server = http.createServer(app);
@@ -54,4 +54,3 @@ const normalizePort = val => {
   server.on("listening", onListening);
   //storing server 
   server.listen(port);
-  
