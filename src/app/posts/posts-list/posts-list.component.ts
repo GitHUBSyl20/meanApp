@@ -31,7 +31,10 @@ private postsSub: Subscription;
   constructor(public postsService: PostsService) {}
  
   ngOnInit() {
-    this.posts= this.postsService.getPosts();
+    //triggering the fetching of new posts at loading component
+    //getting new posts only if we reload the page!!!!
+    this.postsService.getPosts();
+    //rendering the posts
     this.postsSub=this.postsService.getPostUpdateListener()
     .subscribe((posts: Post[])=>{
       this.posts= posts

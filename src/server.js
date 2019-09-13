@@ -4,7 +4,9 @@ const debug = require("debug")("node-angular");
 
 const normalizePort = val => {
     var port = parseInt(val, 10);
-  
+    
+  console.log("server is on")
+
     if (isNaN(port)) {
       // named pipe
       return val;
