@@ -20,6 +20,7 @@ export class PostsListComponent implements OnInit, OnDestroy {
 posts: Post[] = [];
 private postsSub: Subscription;
 
+
 /*   postsService: PostsService; 
   constructor(postsService: PostsService) { 
     this.postsService= postsService
@@ -44,6 +45,11 @@ private postsSub: Subscription;
   ngOnDestroy(){
     //avoid memory leak
     this.postsSub.unsubscribe();
+  }
+
+  onDelete(id: string){
+    console.log("deleted", id)
+    this.postsService.deletePost(id); 
   }
 
 }

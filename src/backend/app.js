@@ -1,8 +1,8 @@
 //importation
 //will contain the express app
 const express = require('express');
-const bodyParser = require('body-parser'); 
-const  mongoose = require ("mongoose");
+const bodyParser = require('body-parser');
+const mongoose = require("mongoose");
 
 const Post = require('./models/post');
 //creating express app. It's a chain of middleware. 
@@ -11,10 +11,10 @@ const app = express();
 
 //let's connect to the database
 mongoose.connect("mongodb+srv://syl20:vm8gCOCS9ol7FpRE@cluster0-jfodh.mongodb.net/node-angular?retryWrites=true&w=majority")
-  .then(()=>{
+  .then(() => {
     console.log('connected to database')
   })
-  .catch(()=>{
+  .catch(() => {
     console.log('connection failed')
   });
 
@@ -23,7 +23,7 @@ mongoose.connect("mongodb+srv://syl20:vm8gCOCS9ol7FpRE@cluster0-jfodh.mongodb.ne
 app.use(bodyParser.json());
 
 //for all incoming request whatever its origin
-app.use((req, res, next)=>{
+app.use((req, res, next) => {
   //alllowing acces to the ressource whatever the origin of ot (*)
   //which domain is allowed to acces our ressources
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -31,49 +31,54 @@ app.use((req, res, next)=>{
   res.setHeader(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
-    );
+  );
   res.setHeader(
     "Access-Control-Allow-Methods",
     //option is send by default to check validity of the request
     "GET, POST, PATCH, DELETE, OPTIONS"
-    );
-    next(); 
+  );
+  next();
 })
 
-app.post("/api/posts", (req, res, next)=>{
+app.post("/api/posts", (req, res, next) => {
+  //we use an instance of Post here
   const post = new Post({
     title: req.body.title,
     content: req.body.content
   });
 
   //automatically select the right query for the database and insert the corresponding data (post) in the database+ auto id
-  post.save(); 
- /*  const post = req.body; */
-  console.log(post)
-  //everything is ok and a ressource was added (201)
-  res.status(201).json({
-    message : "post added succesfully"
+  post.save().then(createdPost => {
+    res.status(201).json({
+      message: "post added succesfully",
+      postId: createdPost.id
+    });
+    //everything is ok and a ressource was added (201)
   })
 })
 
-app.get("/api/posts", (req, res, next)=>{
-    //sending back a response
-    //ends the response implicitely
+app.get("/api/posts", (req, res, next) => {
+  //sending back a response
+  //ends the response implicitely
 
-    //find: mongoose db methode that returns entry/Can be configure to narrow down the research
+  //find: mongoose db methode that returns entry/Can be configure to narrow down the research
   Post.find()
-  //asynchronous task needs wait for the reception of data
-  .then(documents=>{
-    console.log(documents)
-    res.status(200).json({
-      message: 'post fetched sucessfully',
-      posts:documents
-  })
- 
-    
+    //asynchronous task needs wait for the reception of data
+    .then(documents => {
+      console.log(documents)
+      res.status(200).json({
+        message: 'post fetched sucessfully',
+        posts: documents
+      })
     });
 });
-
+//dynamic id
+app.delete("/api/posts/:id", (req, res, next) => {
+  Post.deleteOne({ _id: req.params.id }).then(result => {
+    console.log(result);
+    res.status(200).json({ message: "post deleted" });
+  })
+})
 //exporting the express app (const and all the middleware
 //const stay the same even with new middleware)
 module.exports = app;
