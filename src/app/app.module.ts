@@ -17,13 +17,12 @@ import { PostCreateComponent } from './posts/post-create/post-create.component';
 import { HeaderComponent } from './posts/header/header.component';
 import { PostsListComponent } from './posts/posts-list/posts-list.component';
 
-
 @NgModule({
   declarations: [
     AppComponent,
     PostCreateComponent,
     HeaderComponent,
-    PostsListComponent
+    PostsListComponent,
   ],
   imports: [
     BrowserModule,

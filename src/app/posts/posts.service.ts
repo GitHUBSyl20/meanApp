@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Post } from './posts.model'
+import { stringify } from '@angular/compiler/src/util';
 
 //js object to configure it 
 //angular find it everywhere in the app and create a single instance of it
@@ -54,6 +55,14 @@ export class PostsService {
         return this.postsUpdated.asObservable()
     }
 
+    getPost(id: string){
+        //renvoie un objet contenant le post dont l'id correspondant à celui rechercher
+        //fait en parcourant les posts et eb utilisant fin
+        /* return{...this.posts.find(p=>p.id === id)} */
+
+        return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/'+id);
+    }
+
     //ajouter post aux tableau:
     addPost(title: string, content: string) {
         //post is a constructor
@@ -66,12 +75,32 @@ export class PostsService {
                 //id fetched No overiding cause same object. 
                 //Acces property inside the object not tje etnire object changeable therefore
                 post.id = id
-                console.log(responseData.message)
                 //pushing it to local post after the request was successful : pesssimistic approach
                 this.posts.push(post);
                 //sending notification to the rest of the app
                 this.postsUpdated.next([...this.posts]);
             });
+    }
+
+    updatePost(id: string, title: string, content: string){
+        //js object
+        const post: Post = {id: id, title: title, content: content}
+        this.http.put('http://localhost:3000/api/posts/'+id, post)
+        .subscribe(response=>{
+            //make a copy of all the posts
+            const updatedPosts = [...this.posts];
+            //cherche l'id du vieux post que l'on édite (return true or false)`
+            //if id of the post in the array is equal to the post edited with the id
+            const oldPostIndex = updatedPosts.findIndex(p=>p.id === post.id)
+            //avec cet id on définie le post mis à jour avec ses data comme étant le post updated
+            //on le remplace dans la copie du tableau avec  le nouveau post
+            updatedPosts[oldPostIndex]= post;
+            //on remplace le tableau des posts par le  
+            //nouveau tableau modifié dans lesquel on a changé le post avec l'id souhaité
+            this.posts = updatedPosts;//immutable way to updating the new post
+            //sending a copy of the updated post
+            this.postsUpdated.next([...this.posts]);
+        });
     }
 
     deletePost(postId: string) {
@@ -85,4 +114,13 @@ export class PostsService {
             this.postsUpdated.next([...this.posts]);
         })
     }
+
+    /* editPost(postId: string){
+        console.log("edited in service")
+        this.http
+            .patch(`http://localhost:3000/api/posts/${postId}`)
+            .subscribe(()=>{
+            const updatedPosts = this.posts.filter(post => post.id !== postId)
+            }) 
+    }*/
 }

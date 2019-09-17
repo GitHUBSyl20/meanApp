@@ -4,12 +4,12 @@ import { Subscription} from 'rxjs';
 import { Post } from '../posts.model';
 import { PostsService } from '../posts.service'
 
-
 @Component({
   selector: 'app-posts-list',
   templateUrl: './posts-list.component.html',
   styleUrls: ['./posts-list.component.css']
 })
+
 export class PostsListComponent implements OnInit, OnDestroy {
 /*   posts = [
     {title: "first post", content: "thisi is the first post"},
@@ -19,7 +19,6 @@ export class PostsListComponent implements OnInit, OnDestroy {
 
 posts: Post[] = [];
 private postsSub: Subscription;
-
 
 /*   postsService: PostsService; 
   constructor(postsService: PostsService) { 
@@ -51,5 +50,4 @@ private postsSub: Subscription;
     console.log("deleted", id)
     this.postsService.deletePost(id); 
   }
-
 }
