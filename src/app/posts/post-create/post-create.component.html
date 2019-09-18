@@ -1,61 +1,26 @@
-<!-- <p>post-create works!</p>
-<textarea name="6" id="" cols="30" rows="10" #postInput [value]="fakePost"></textarea>
-<button (click)="onAddPost(postInput)" >Click Here</button> -->
-
-
-<!--second binding method-->
-
 <mat-card>
     <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <form (submit)="onSavePost(postForm)" #postForm="ngForm" *ngIf="!isLoading">
-        <!--#postForm gives acces to form object angular just created for us-->
+    <form (submit)="onSavePost()" *ngIf="!isLoading">
+
         <mat-form-field>
             <input 
                 matInput 
                 type="text"
                 name="title"
-                [ngModel]="post?.title"
-                required
-                minlength="3"
-                #title="ngModel"
-                placeholder="postTitle"
+                placeholder="post Title"
             />
             <mat-error *ngIf="title.invalid">please enter a post title</mat-error>
         </mat-form-field>
         <div>
-            <!--Precise type to avoid default beahavior of submitting
-            -->
-
             <button mat-stroked-button type="button" (click)="filePicker.click()"> Pick Image</button>
             <input type="file" #filePicker>
         </div>
-
-
-<!--  Ecriture alternative : 
-    
-        <mat-form-field>
-                <input 
-                    matInput 
-                    type="text"
-                    name="title"
-                    ngModel
-                    required
-                    minlength="3"
-                />
-                <mat-error *ngIf="postForm.getControl('title').invalid">{{}}
-            </mat-form-field>
-        <mat-form-field> -->
-
- <!--Prepopulate the field- optionnaly (?) with [NgModel] binding-->
     <mat-form-field>
             <textarea 
             matInput 
             rows="4"
             name="content"
-            [ngModel]="post?.content"
-            required
             placeholder="postContent"
-            #content="ngModel"
             ></textarea>
             <mat-error *ngIf="content.invalid">please enter a post content</mat-error>
         </mat-form-field>
@@ -65,7 +30,6 @@
         type="submit"
         >save post</button>
     </form>
-
 </mat-card>
 <!--Button of type submit in a form will submit that form-->
 
