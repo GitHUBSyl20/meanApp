@@ -2,3 +2,12 @@ mat-form-field,
 textarea {
     width: 100%;
 }
+
+mat-spinner{
+    margin: auto; 
+}
+
+/*attribute selector to differentiate froml others input */
+input[type="file"]{
+    visibility: hidden;
+}

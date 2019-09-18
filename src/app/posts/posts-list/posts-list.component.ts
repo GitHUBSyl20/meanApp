@@ -18,7 +18,9 @@ export class PostsListComponent implements OnInit, OnDestroy {
   ] */
 
 posts: Post[] = [];
+isLoading=false; 
 private postsSub: Subscription;
+
 
 /*   postsService: PostsService; 
   constructor(postsService: PostsService) { 
@@ -31,12 +33,15 @@ private postsSub: Subscription;
   constructor(public postsService: PostsService) {}
  
   ngOnInit() {
+    this.isLoading=true;
     //triggering the fetching of new posts at loading component
     //getting new posts only if we reload the page!!!!
     this.postsService.getPosts();
+  
     //rendering the posts
     this.postsSub=this.postsService.getPostUpdateListener()
     .subscribe((posts: Post[])=>{
+      this.isLoading=false;
       this.posts= posts
     })
   }

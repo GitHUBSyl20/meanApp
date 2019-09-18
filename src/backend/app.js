@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const mongoose = require("mongoose");
 var morgan = require("morgan");
 
-const Post = require('./models/post');
+
+
+const postsRoutes = require('./routes/posts')
 
 //creating express app. It's a chain of middleware. 
 //EACH PART OF TTHE FUNNEL DO SOMETHING WITH THE REQUEST
@@ -42,72 +44,8 @@ app.use((req, res, next) => {
   next();
 })
 
-app.post("/api/posts", (req, res, next) => {
-  //we use an instance of Post here
-  const post = new Post({
-    title: req.body.title,
-    content: req.body.content
-  });
+app.use("/api/posts", postsRoutes)
 
-  app.put("/api/posts/:id", (req, res, next) => {
-    const post = new Post({
-      //reusing the id from the backend
-      _id: req.body.id,
-      title: req.body.title,
-      content: req.body.content
-    });
-    Post.updateOne({ _id: req.params.id }, post).then(result => {
-      console.log(result);
-      res.status(200).json({ message: "update successful" })
-    });
-  });
-
-  //automatically select the right query for the database and insert the corresponding data (post) in the database+ auto id
-  post.save().then(createdPost => {
-    res.status(201).json({
-      message: "post added succesfully",
-      postId: createdPost.id,
-      post: post
-    });
-    //everything is ok and a ressource was added (201)
-  })
-})
-
-
-app.get("/api/posts", (req, res, next) => {
-  //sending back a response
-  //ends the response implicitely
-
-  //find: mongoose db methode that returns entry/Can be configure to narrow down the research
-  Post.find()
-    //asynchronous task needs wait for the reception of data
-    .then(documents => {
-      console.log(documents)
-      res.status(200).json({
-        message: 'post fetched sucessfully',
-        posts: documents
-      })
-    });
-});
-
-app.get("/api/posts/:id", (req, res, next)=>{
-  PostfindById(req.params.id)
-    .then(post=>{
-    if(post){
-      res.status(200).json(post)
-    }else{
-      res.status(404).json({message: "not found"})
-    }
-  })
-})
-
-//dynamic id segment
-app.delete("/api/posts/:id", (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id }).then(result => {
-    console.log(result);
-    res.status(200).json({ message: "post deleted" });
-  })
-})
 //exporting the express app (const and all the middleware
 //const stay the same even with new middleware)
 module.exports = app;

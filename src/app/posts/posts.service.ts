@@ -4,18 +4,19 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Post } from './posts.model'
-import { stringify } from '@angular/compiler/src/util';
+import { Router } from '@angular/router';
 
 //js object to configure it 
 //angular find it everywhere in the app and create a single instance of it
 @Injectable({ providedIn: 'root' })
 export class PostsService {
     private posts: Post[] = [];
-    //list of posts as a payload. 
-    //New observable.
+    //list of posts as a payload.
+
+    //CREATION OF A New observable.
     private postsUpdated = new Subject<Post[]>()
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private router: Router) { }
 
     getPosts() {
         //copy the array being imutable. 
@@ -38,6 +39,7 @@ export class PostsService {
                     }
                 });
             }))
+
             //listening to the information needs subscribe
             //auto unsubcribe. Needs 3 argument, data, ending and errors
             .subscribe((transformedPosts) => {
@@ -50,14 +52,14 @@ export class PostsService {
     //object we can listen but not emit.
     //EAch time we add a post we should be able to get its content
     //since its private we cannot acces it to prevent other component to emit data with it
-    //rendre dispo les posts à l'affichage dans la liste:
+    //POUR rendre dispo les posts à l'affichage dans la liste:
     getPostUpdateListener() {
         return this.postsUpdated.asObservable()
     }
 
     getPost(id: string){
-        //renvoie un objet contenant le post dont l'id correspondant à celui rechercher
-        //fait en parcourant les posts et eb utilisant fin
+        //renvoie un objet contenant le post dont l'id correspond à celui rechercher
+        //fait en parcourant les posts et en utilisant fin
         /* return{...this.posts.find(p=>p.id === id)} */
 
         return this.http.get<{_id: string, title: string, content: string}>('http://localhost:3000/api/posts/'+id);
@@ -73,12 +75,14 @@ export class PostsService {
             .subscribe(responseData => {
                 const id = responseData.postId;
                 //id fetched No overiding cause same object. 
-                //Acces property inside the object not tje etnire object changeable therefore
+                //Acces property inside the object: not the entire object changeable therefore
                 post.id = id
                 //pushing it to local post after the request was successful : pesssimistic approach
                 this.posts.push(post);
                 //sending notification to the rest of the app
                 this.postsUpdated.next([...this.posts]);
+                //navigating when adding a post
+                this.router.navigate(["/"])
             });
     }
 
@@ -93,13 +97,15 @@ export class PostsService {
             //if id of the post in the array is equal to the post edited with the id
             const oldPostIndex = updatedPosts.findIndex(p=>p.id === post.id)
             //avec cet id on définie le post mis à jour avec ses data comme étant le post updated
-            //on le remplace dans la copie du tableau avec  le nouveau post
+            //on le remplace dans la copie du tableau avec le nouveau post
             updatedPosts[oldPostIndex]= post;
             //on remplace le tableau des posts par le  
             //nouveau tableau modifié dans lesquel on a changé le post avec l'id souhaité
-            this.posts = updatedPosts;//immutable way to updating the new post
+            this.posts = updatedPosts;//immutable way to update the new post
             //sending a copy of the updated post
             this.postsUpdated.next([...this.posts]);
+            //navigating when updating a post
+            this.router.navigate(["/"])
         });
     }
 
